@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: prometheus-blackbox-exporter
-  namespace: argocd
+  namespace: blackbox-exporter
   labels:
     name: prometheus-blackbox-exporter
 spec:
@@ -27,7 +27,7 @@ spec:
                 fail_if_not_ssl: false
   destination:
     name: in-cluster
-    namespace: argocd
+    namespace: blackbox-exporter
   syncPolicy:
     automated:
       prune: true
