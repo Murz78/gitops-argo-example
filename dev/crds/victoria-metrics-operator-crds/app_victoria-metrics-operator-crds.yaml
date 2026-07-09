@@ -1,0 +1,34 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: victoria-metrics-operator-crds
+  namespace: argocd
+  labels:
+    name: victoria-metrics-operator-crds
+spec:
+  project: infra-apps
+  source:
+    repoURL: https://victoriametrics.github.io./helm-charts/
+    chart: victoria-metrics-operator-crds
+    targetRevision: 0.12.0
+  destination:
+    name: in-cluster
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - Validate=true
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PreserveResourcesOnDeletion=true
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
