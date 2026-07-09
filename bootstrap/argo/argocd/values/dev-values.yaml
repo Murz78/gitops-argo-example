@@ -1,5 +1,18 @@
 ---
 extraObjects:
+  # Cluster secret that registers the local cluster in Argo CD under the name "dev",
+  # so ApplicationSets can use destination.name: dev
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dev-cluster
+      namespace: argocd
+      labels:
+        argocd.argoproj.io/secret-type: cluster
+    type: Opaque
+    stringData:
+      name: dev
+      server: https://kubernetes.default.svc
   # AppProject bootstrap-project that contains 2 apps that bootstrap other projects & appsets
   - apiVersion: argoproj.io/v1alpha1
     kind: AppProject
@@ -11,9 +24,9 @@ extraObjects:
       sourceRepos:
         - https://github.com/Murz78/gitops-argo-example.git
       destinations:
-        - namespace: argocd
-          name: in-cluster
-          server: https://kubernetes.default.svc
+      - namespace: argocd
+        name: in-cluster
+        server: https://kubernetes.default.svc
       namespaceResourceWhitelist:
         - group: argoproj.io
           kind: AppProject
@@ -21,72 +34,3 @@ extraObjects:
           kind: Application
         - group: argoproj.io
           kind: ApplicationSet
-
-  # Application that bootstraps all other projects
-  - apiVersion: argoproj.io/v1alpha1
-    kind: Application
-    metadata:
-      name: dev-app-of-projects
-      namespace: infra-argocd
-      annotations:
-        argocd.argoproj.io/manifest-generate-paths: .
-    spec:
-      project: dev-bootstrap-project
-      source:
-        repoURL: https://gitlab.platform.corp/magnitonline/devops/market/infra-argocd.git
-        targetRevision: master
-        path: bootstrap/projects/dev
-        directory:
-          recurse: true
-      destination:
-        name: in-cluster
-        namespace: infra-argocd
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - Validate=true
-          - CreateNamespace=true
-          - PreserveResourcesOnDeletion=true
-          - PruneLast=true
-        retry:
-          limit: 5
-          backoff:
-            duration: 5s
-            factor: 2
-            maxDuration: 3m
-  # Application that bootstraps appsets
-  - apiVersion: argoproj.io/v1alpha1
-    kind: Application
-    metadata:
-      name: dev-app-of-appsets
-      namespace: infra-argocd
-      annotations:
-        argocd.argoproj.io/manifest-generate-paths: .
-    spec:
-      project: dev-bootstrap-project
-      source:
-        repoURL: https://gitlab.platform.corp/magnitonline/devops/market/infra-argocd.git
-        targetRevision: master
-        path: bootstrap/applicationsets/dev/
-        directory:
-          recurse: true
-      destination:
-        name: in-cluster
-        namespace: infra-argocd
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - Validate=true
-          - CreateNamespace=true
-          - PreserveResourcesOnDeletion=true
-          - PruneLast=true
-        retry:
-          limit: 5
-          backoff:
-            duration: 5s
-            factor: 2
-            maxDuration: 3m
