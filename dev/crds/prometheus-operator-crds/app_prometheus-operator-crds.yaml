@@ -9,7 +9,7 @@ metadata:
 spec:
   project: infra-apps
   source:
-    repoURL: https://prometheus-community.github.io./helm-charts
+    repoURL: https://prometheus-community.github.io/helm-charts
     chart: prometheus-operator-crds
     targetRevision: 30.0.1
   destination:
@@ -20,6 +20,7 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
+      - ServerSideApply=true
       - Validate=true
       - CreateNamespace=true
       - PrunePropagationPolicy=foreground
