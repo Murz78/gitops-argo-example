@@ -1,0 +1,14 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-operator-crds
+  namespace: argocd
+  labels:
+    name: prometheus-operator-crds
+spec:
+  project: infra-apps
+  source:
+    repoURL: https://prometheus-community.github.io./helm-charts
+    chart: prometheus-operator-crds
+    targetRevision: 30.0.1
