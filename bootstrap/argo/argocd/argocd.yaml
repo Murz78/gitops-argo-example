@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: argocd
-  namespace: infra-argocd
+  namespace: argocd
 spec:
   generators:
     - list:
@@ -25,11 +25,11 @@ spec:
               - $valuespath/bootstrap/argo/argocd/values/values.yaml
               - $valuespath/bootstrap/argo/argocd/values/{{cluster}}-values.yaml
         - repoURL: https://github.com/Murz78/gitops-argo-example.git
-          targetRevision: master
+          targetRevision: main
           ref: valuespath
       destination:
         name: "{{cluster}}"
-        namespace: infra-argocd
+        namespace: argocd
       syncPolicy:
         automated:
           prune: true

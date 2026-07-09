@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infra-apps
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.slack: argocd-all-notifications;
+spec:
+  description: This is an infrastructure apps project
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*'
+    name: '*'
+    server: '*'
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  orphanedResources:
+    warn: false

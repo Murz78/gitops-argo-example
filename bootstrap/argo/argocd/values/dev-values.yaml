@@ -5,13 +5,13 @@ extraObjects:
     kind: AppProject
     metadata:
       name: dev-bootstrap-project
-      namespace: infra-argocd
+      namespace: argocd
     spec:
       description: This is a bootstrap project
       sourceRepos:
         - https://github.com/Murz78/gitops-argo-example.git
       destinations:
-        - namespace: infra-argocd
+        - namespace: argocd
           name: in-cluster
           server: https://kubernetes.default.svc
       namespaceResourceWhitelist:
