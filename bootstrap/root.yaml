@@ -1,0 +1,38 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: .
+spec:
+  # default, а не infra-apps: проект infra-apps создаётся этим же приложением,
+  # ссылка на него из root дала бы циклическую зависимость при первом бутстрапе
+  project: default
+  source:
+    repoURL: https://github.com/Murz78/gitops-argo-example.git
+    targetRevision: main
+    path: bootstrap
+    directory:
+      recurse: true
+      # values-файлы не являются k8s-манифестами, их применять нельзя
+      exclude: 'argo/argocd/values/*'
+  destination:
+    name: in-cluster
+    namespace: argocd
+  revisionHistoryLimit: 3
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
+      - PruneLast=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
