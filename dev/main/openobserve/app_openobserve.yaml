@@ -12,6 +12,11 @@ spec:
     repoURL: https://charts.openobserve.ai
     chart: openobserve-standalone
     targetRevision: 0.80.3
+    helm:
+      valuesObject:
+        image:
+          oss:
+            repository: openobserve/openobserve
   destination:
     name: in-cluster
     namespace: openobserve
