@@ -10,7 +10,7 @@ spec:
       repoURL: https://github.com/Murz78/gitops-argo-example.git
       revision: main
       directories:
-        - path: dev/core/*
+        - path: dev/core
   template:
     metadata:
       name: '{{path.basename}}-sync'
