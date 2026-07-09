@@ -11,7 +11,7 @@ spec:
           - cluster: dev
   template:
     metadata:
-      name: "{{cluster}}-argocd"
+      name: "argocd"
       annotations:
         argocd.argoproj.io/manifest-generate-paths: /bootstrap/argo/argocd/
     spec:
@@ -28,7 +28,7 @@ spec:
           targetRevision: main
           ref: valuespath
       destination:
-        name: "{{cluster}}"
+        name: in-cluster
         namespace: argocd
       syncPolicy:
         automated:

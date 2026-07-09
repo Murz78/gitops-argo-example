@@ -1,18 +1,5 @@
 ---
 extraObjects:
-  # Cluster secret that registers the local cluster in Argo CD under the name "dev",
-  # so ApplicationSets can use destination.name: dev
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      name: dev-cluster
-      namespace: argocd
-      labels:
-        argocd.argoproj.io/secret-type: cluster
-    type: Opaque
-    stringData:
-      name: dev
-      server: https://kubernetes.default.svc
   # AppProject bootstrap-project that contains 2 apps that bootstrap other projects & appsets
   - apiVersion: argoproj.io/v1alpha1
     kind: AppProject
