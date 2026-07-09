@@ -1,0 +1,83 @@
+---
+crds:
+  install: true
+  keep: true
+
+global:
+  revisionHistoryLimit: 3
+  logging:
+    format: json
+    level: info
+  nodeSelector:
+    app_type: infra_services
+  tolerations:
+    - key: app_type
+      operator: Equal
+      value: infra_services
+      effect: NoSchedule
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: ScheduleAnyway
+
+configs:
+  cm:
+    create: true
+    exec.enabled: true
+    accounts.ci-robot.enabled: "true"
+    accounts.ci-robot: apiKey
+    resource.ignoreResourceUpdatesEnabled: true
+    resource.compareoptions: |
+      ignoreAggregatedRoles: true
+      ignoreResourceStatusField: crd
+      ignoreDifferencesOnResourceUpdates: true
+    resource.customizations.ignoreResourceUpdates.external-secrets.io_ExternalSecret:
+      |
+      jsonPointers:
+      - /status/refreshTime
+    resource.customizations.ignoreResourceUpdates.external-secrets.io_ClusterExternalSecret:
+      |
+      jsonPointers:
+      - /status/refreshTime
+    resource.customizations.ignoreResourceUpdates.all: |
+      jsonPointers:
+      - /metadata/annotations
+      - /metadata/labels
+      - /metadata/creationTimestamp
+      - /status
+    resource.customizations.ignoreDifferences.all: |
+      jsonPointers:
+      - /metadata/labels
+
+  params:
+    create: true
+    otlp.address: "tempo-opentelemetry.platform.corp:4317"
+    controller.status.processors: 20
+    controller.operation.processors: 10
+    controller.self.heal.timeout.seconds: 5
+    controller.repo.server.timeout.seconds: 60
+    server.enable.gzip: "true"
+    server.insecure: "true"
+    server.enable.proxy.extension: "true"
+    reposerver.parallelism.limit: 0
+    applicationsetcontroller.policy: sync
+    applicationsetcontroller.enable.progressive.syncs: false
+
+  repositories:
+    infra-argocd:
+      url: https://github.com/Murz78/gitops-argo-example.git
+      name: infra-argocd
+  secret:
+    createSecret: false
+
+controller:
+  replicas: 1
+  dynamicClusterDistribution: false
+  resources:
+    limits:
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 2Gi
+
+  initContainers: []

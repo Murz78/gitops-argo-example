@@ -1,0 +1,48 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: argocd
+  namespace: infra-argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: dev
+  template:
+    metadata:
+      name: "{{cluster}}-argocd"
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: /bootstrap/argo/argocd/
+    spec:
+      project: infra-apps
+      sources:
+        - repoURL: https://argoproj.github.io/argo-helm
+          chart: argo-cd
+          targetRevision: "10.1.2"
+          helm:
+            valueFiles:
+              - $valuespath/bootstrap/argo/argocd/values/values.yaml
+              - $valuespath/bootstrap/argo/argocd/values/{{cluster}}-values.yaml
+        - repoURL: https://github.com/Murz78/gitops-argo-example.git
+          targetRevision: master
+          ref: valuespath
+      destination:
+        name: "{{cluster}}"
+        namespace: infra-argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - Validate=true
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PreserveResourcesOnDeletion=true
+          - PruneLast=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
