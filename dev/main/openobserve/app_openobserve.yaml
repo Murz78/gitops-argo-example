@@ -10,7 +10,7 @@ spec:
   project: infra-apps
   source:
     repoURL: https://charts.openobserve.ai
-    chart: openobserve
+    chart: openobserve-standalone
     targetRevision: 0.80.3
   destination:
     name: in-cluster
