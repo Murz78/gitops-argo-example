@@ -8,17 +8,6 @@ global:
   logging:
     format: json
     level: info
-  nodeSelector:
-    app_type: infra_services
-  tolerations:
-    - key: app_type
-      operator: Equal
-      value: infra_services
-      effect: NoSchedule
-  topologySpreadConstraints:
-    - maxSkew: 1
-      topologyKey: topology.kubernetes.io/zone
-      whenUnsatisfiable: ScheduleAnyway
 
 configs:
   cm:
