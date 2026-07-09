@@ -1,11 +1,11 @@
----
+# AppProject infra-apps to hide some apps (Allow only argoCRDS)
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: infra-apps
   namespace: argocd
   annotations:
-    notifications.argoproj.io/subscribe.slack: argocd-all-notifications;
+    notifications.argoproj.io/subscribe.slack: argocd-dev-notifications;
 spec:
   description: This is an infrastructure apps project
   sourceRepos:
@@ -17,5 +17,3 @@ spec:
   clusterResourceWhitelist:
   - group: '*'
     kind: '*'
-  orphanedResources:
-    warn: false
