@@ -1,4 +1,4 @@
-# AppProject infra-apps to hide some apps (Allow only argoCRDS)
+---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -9,11 +9,11 @@ metadata:
 spec:
   description: This is an infrastructure apps project
   sourceRepos:
-  - '*'
+    - "*"
   destinations:
-  - namespace: '*'
-    name: '*'
-    server: '*'
+    - namespace: "*"
+      name: "*"
+      server: "*"
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: "*"
+      kind: "*"

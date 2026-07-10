@@ -1,0 +1,15 @@
+---
+extends: default
+
+ignore: |
+  cluster/init/flux-system/gotk-components.yaml
+
+rules:
+  # 120 chars should be enough, but don't fail if a line is longer
+  line-length:
+    max: 120
+  comments:
+    ignore: "*"
+  document-start:
+    ignore: |
+      .gitlab-ci.yml

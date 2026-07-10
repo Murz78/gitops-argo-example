@@ -28,7 +28,7 @@ spec:
           targetRevision: main
           ref: valuespath
       destination:
-        name: '{{cluster}}'
+        name: "{{cluster}}"
         namespace: argocd
       syncPolicy:
         automated:

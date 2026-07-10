@@ -17,7 +17,7 @@ spec:
     directory:
       recurse: true
       # values-файлы не являются k8s-манифестами, их применять нельзя
-      exclude: 'argo/argocd/values/*'
+      exclude: "argo/argocd/values/*"
   destination:
     name: in-cluster
     namespace: argocd

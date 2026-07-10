@@ -6,14 +6,14 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/Murz78/gitops-argo-example.git
-      revision: main
-      directories:
-        - path: dev/crds/*
+    - git:
+        repoURL: https://github.com/Murz78/gitops-argo-example.git
+        revision: main
+        directories:
+          - path: dev/crds/*
   template:
     metadata:
-      name: '{{path.basename}}-sync'
+      name: "{{path.basename}}-sync"
       annotations:
         argocd.argoproj.io/manifest-generate-paths: .
     spec:
@@ -21,25 +21,25 @@ spec:
       source:
         repoURL: https://github.com/Murz78/gitops-argo-example.git
         targetRevision: main
-        path: '{{path}}'
+        path: "{{path}}"
       destination:
         name: in-cluster
         namespace: argocd
       revisionHistoryLimit: 3
       ignoreDifferences:
-      - group: "*"
-        kind: Secret
-        jsonPointers:
-         - /data
+        - group: "*"
+          kind: Secret
+          jsonPointers:
+            - /data
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
-        - Validate=true
-        - CreateNamespace=true
-        - PreserveResourcesOnDeletion=true
-        - PruneLast=true
+          - Validate=true
+          - CreateNamespace=true
+          - PreserveResourcesOnDeletion=true
+          - PruneLast=true
         retry:
           limit: 3
           backoff:
