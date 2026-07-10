@@ -22,22 +22,12 @@ spec:
         grafana:
           enabled: false
         victoria-metrics-operator:
-          image:
-            registry: harbor.gastronom.corp/dockerhub
-          env:
-            - name: "VM_VMALERTDEFAULT_IMAGE"
-              value: "harbor.gastronom.corp/dockerhub/victoriametrics/vmalert"
-            - name: "VM_VMAGENTDEFAULT_IMAGE"
-              value: "harbor.gastronom.corp/dockerhub/victoriametrics/vmagent"
-            - name: "VM_VMSINGLEDEFAULT_IMAGE"
-              value: "harbor.gastronom.corp/dockerhub/victoriametrics/victoria-metrics"
-            - name: "VM_VMALERTMANAGER_ALERTMANAGERDEFAULTBASEIMAGE"
-              value: "harbor.gastronom.corp/dockerhub/prom/alertmanager"
           operator:
             disable_prometheus_converter: false
             enable_converter_ownership: true
-          crd:
-            create: false
+          crds:
+            enabled: false
+            plain: false
         vmauth:
           enabled: false
         vmsingle:
