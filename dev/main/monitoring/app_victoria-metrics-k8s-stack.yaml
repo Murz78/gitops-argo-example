@@ -1,129 +1,129 @@
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: victoria-metrics
-  namespace: argocd
-  labels:
-    name: victoria-metrics
-spec:
-  project: infra-apps
-  source:
-    repoURL: https://victoriametrics.github.io/helm-charts/
-    chart: victoria-metrics-k8s-stack
-    targetRevision: 0.86.0
-    helm:
-      valuesObject:
-        defaultRules:
-          create: true
-          groups:
-            etcd:
-              create: false
-        grafana:
-          enabled: false
-        victoria-metrics-operator:
-          operator:
-            disable_prometheus_converter: false
-            enable_converter_ownership: true
-          crds:
-            enabled: false
-            plain: false
-        vmauth:
-          enabled: false
-        vmsingle:
-          enabled: true
-          spec:
-            logFormat: json
-            extraArgs:
-              dedup.minScrapeInterval: "60s"
-              maxLabelsPerTimeseries: "60"
-            retentionPeriod: 1d
-        vmcluster:
-          enabled: false
-        vmagent:
-          enabled: true
-          spec:
-            logFormat: json
-            serviceScrapeNamespaceSelector: {}
-            podScrapeNamespaceSelector: {}
-            podScrapeSelector: {}
-            serviceScrapeSelector: {}
-            scrapeInterval: 60s
-            vmAgentExternalLabelName: vmagent_ha
-            externalLabels:
-              cluster: dev
-            extraArgs:
-              promscrape.consul.waitTime: "30s"
-              promscrape.consulSDCheckInterval: "600s"
-              promscrape.dropOriginalLabels: "true"
-              promscrape.maxScrapeSize: "64MB"
-              promscrape.streamParse: "true"
-              promscrape.suppressScrapeErrors: "true"
-              streamAggr.dropInputLabels: "replica"
-              streamAggr.dedupInterval: "60s"
-            selectAllByDefault: true
-            resources:
-              limits:
-                cpu: 400m
-                memory: 512Mi
-              requests:
-                cpu: 400m
-                memory: 512Mi
-        alertmanager:
-          enabled: true
-        vmalert:
-          enabled: true
-          remoteWriteVMAgent: true
-        prometheus-node-exporter:
-          enabled: true
-          vmScrape:
-            enabled: true
-            spec:
-              jobLabel: jobLabel
-              selector:
-                matchLabels:
-                  app.kubernetes.io/name: prometheus-node-exporter
-              endpoints:
-                - port: metrics
-                  metricRelabelConfigs:
-                    - action: drop
-                      source_labels: [mountpoint]
-                      regex: "/var/lib/kubelet/pods.+"
-                  relabelConfigs:
-                    - action: replace
-                      sourceLabels:
-                        - __meta_kubernetes_endpoint_node_name
-                      targetLabel: instance
-        kube-state-metrics:
-          enabled: true
-          vmScrape:
-            enabled: true
-            spec:
-              selector:
-                matchLabels:
-                  app.kubernetes.io/name: kube-state-metrics
-                  app.kubernetes.io/instance: victoria-metrics-k8s-stack
-              endpoints:
-                - port: http
-                  honorLabels: true
-                  metricRelabelConfigs: []
-  destination:
-    name: in-cluster
-    namespace: monitoring
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - ServerSideApply=true
-      - Validate=true
-      - CreateNamespace=true
-      - PrunePropagationPolicy=foreground
-      - PreserveResourcesOnDeletion=true
-      - PruneLast=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: victoria-metrics
+#   namespace: argocd
+#   labels:
+#     name: victoria-metrics
+# spec:
+#   project: infra-apps
+#   source:
+#     repoURL: https://victoriametrics.github.io/helm-charts/
+#     chart: victoria-metrics-k8s-stack
+#     targetRevision: 0.86.0
+#     helm:
+#       valuesObject:
+#         defaultRules:
+#           create: true
+#           groups:
+#             etcd:
+#               create: false
+#         grafana:
+#           enabled: false
+#         victoria-metrics-operator:
+#           operator:
+#             disable_prometheus_converter: false
+#             enable_converter_ownership: true
+#           crds:
+#             enabled: false
+#             plain: false
+#         vmauth:
+#           enabled: false
+#         vmsingle:
+#           enabled: true
+#           spec:
+#             logFormat: json
+#             extraArgs:
+#               dedup.minScrapeInterval: "60s"
+#               maxLabelsPerTimeseries: "60"
+#             retentionPeriod: 1d
+#         vmcluster:
+#           enabled: false
+#         vmagent:
+#           enabled: true
+#           spec:
+#             logFormat: json
+#             serviceScrapeNamespaceSelector: {}
+#             podScrapeNamespaceSelector: {}
+#             podScrapeSelector: {}
+#             serviceScrapeSelector: {}
+#             scrapeInterval: 60s
+#             vmAgentExternalLabelName: vmagent_ha
+#             externalLabels:
+#               cluster: dev
+#             extraArgs:
+#               promscrape.consul.waitTime: "30s"
+#               promscrape.consulSDCheckInterval: "600s"
+#               promscrape.dropOriginalLabels: "true"
+#               promscrape.maxScrapeSize: "64MB"
+#               promscrape.streamParse: "true"
+#               promscrape.suppressScrapeErrors: "true"
+#               streamAggr.dropInputLabels: "replica"
+#               streamAggr.dedupInterval: "60s"
+#             selectAllByDefault: true
+#             resources:
+#               limits:
+#                 cpu: 400m
+#                 memory: 512Mi
+#               requests:
+#                 cpu: 400m
+#                 memory: 512Mi
+#         alertmanager:
+#           enabled: true
+#         vmalert:
+#           enabled: true
+#           remoteWriteVMAgent: true
+#         prometheus-node-exporter:
+#           enabled: true
+#           vmScrape:
+#             enabled: true
+#             spec:
+#               jobLabel: jobLabel
+#               selector:
+#                 matchLabels:
+#                   app.kubernetes.io/name: prometheus-node-exporter
+#               endpoints:
+#                 - port: metrics
+#                   metricRelabelConfigs:
+#                     - action: drop
+#                       source_labels: [mountpoint]
+#                       regex: "/var/lib/kubelet/pods.+"
+#                   relabelConfigs:
+#                     - action: replace
+#                       sourceLabels:
+#                         - __meta_kubernetes_endpoint_node_name
+#                       targetLabel: instance
+#         kube-state-metrics:
+#           enabled: true
+#           vmScrape:
+#             enabled: true
+#             spec:
+#               selector:
+#                 matchLabels:
+#                   app.kubernetes.io/name: kube-state-metrics
+#                   app.kubernetes.io/instance: victoria-metrics-k8s-stack
+#               endpoints:
+#                 - port: http
+#                   honorLabels: true
+#                   metricRelabelConfigs: []
+#   destination:
+#     name: in-cluster
+#     namespace: monitoring
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - ServerSideApply=true
+#       - Validate=true
+#       - CreateNamespace=true
+#       - PrunePropagationPolicy=foreground
+#       - PreserveResourcesOnDeletion=true
+#       - PruneLast=true
+#     retry:
+#       limit: 5
+#       backoff:
+#         duration: 5s
+#         factor: 2
+#         maxDuration: 3m
